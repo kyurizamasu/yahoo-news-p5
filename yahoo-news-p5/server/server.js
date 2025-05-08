@@ -8,16 +8,34 @@ const PORT = 3000;
 
 app.use(cors());
 
+// ✅ ここで複数カテゴリのRSSを指定
+const feedUrls = [
+  'https://news.yahoo.co.jp/rss/topics/top-picks.xml',
+  'https://news.yahoo.co.jp/rss/topics/business.xml',
+  'https://news.yahoo.co.jp/rss/topics/it.xml',
+  'https://news.yahoo.co.jp/rss/topics/world.xml',
+  'https://news.yahoo.co.jp/rss/topics/science.xml',
+  'https://news.yahoo.co.jp/rss/topics/sports.xml'
+];
+
 app.get('/news', async (req, res) => {
   try {
-    const feed = await parser.parseURL('https://news.yahoo.co.jp/rss/topics/top-picks.xml');
-    const titles = feed.items.map(item => item.title);
-    res.json(titles);
+    let allTitles = [];
+    for (const url of feedUrls) {
+      const feed = await parser.parseURL(url);
+      const titles = feed.items.map(item => item.title);
+      allTitles = allTitles.concat(titles);
+    }
+
+    // 重複を排除し、最大50件まで返す
+    const uniqueTitles = [...new Set(allTitles)].slice(0, 50);
+    res.json(uniqueTitles);
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: 'Failed to fetch RSS' });
   }
 });
 
 app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
+  console.log(`✅ Server running at http://localhost:${PORT}`);
 });
