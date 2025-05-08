@@ -8,7 +8,7 @@ function setup() {
   fill(0);
 
   fetchNews(); // 初回取得
-  setInterval(fetchNews, 60 * 1000); // 60秒ごとに更新
+  setInterval(fetchNews, 6 * 1000); // 60秒ごとに更新
 }
 
 function draw() {
