@@ -28,8 +28,7 @@ app.get('/news', async (req, res) => {
     }
 
     // 重複を排除し、最大50件まで返す
-    const uniqueTitles = [...new Set(allTitles)].slice(0, 50);
-    res.json(uniqueTitles);
+    res.json(allTitles.slice(0, 50));
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to fetch RSS' });
