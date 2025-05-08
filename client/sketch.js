@@ -1,34 +1,47 @@
-let headlines = [];
-let updateCount = 0;
+const express = require('express');
+const RSSParser = require('rss-parser');
+const cors = require('cors');
+const path = require('path');
 
-function setup() {
-  createCanvas(windowWidth, windowHeight);
-  textSize(16);
-  textAlign(LEFT, TOP);
-  fill(0);
+const app = express();
+const parser = new RSSParser();
+const PORT = process.env.PORT || 3000;
 
-  fetchNews(); // 初回取得
-  setInterval(fetchNews, 10 * 1000); // 60秒ごとに更新
-}
+app.use(cors());
 
-function draw() {
-  background(255);
-  text(`更新回数: ${updateCount}`, 10, 10);
+// ✅ クライアントを静的ファイルとして配信
+app.use(express.static(path.join(__dirname, '..', 'client')));
 
-for (let i = 0; i < news.length; i++) {
-    const firstChar = news[i].charAt(0); // 👈 最初の1文字を取り出す
-    text(`${firstChar}`, 20, y);
-    y += 30;
-  }
-}
+// ✅ APIエンドポイント
+const feedUrls = [
+  'https://news.yahoo.co.jp/rss/topics/top-picks.xml',
+  'https://news.yahoo.co.jp/rss/topics/business.xml',
+  'https://news.yahoo.co.jp/rss/topics/it.xml',
+  'https://news.yahoo.co.jp/rss/topics/world.xml',
+  'https://news.yahoo.co.jp/rss/topics/science.xml',
+  'https://news.yahoo.co.jp/rss/topics/sports.xml'
+];
 
-async function fetchNews() {
+app.get('/api/news', async (req, res) => {
   try {
-    const res = await fetch('/api/news');
-    const json = await res.json();
-    headlines = json.headlines;
-    updateCount++;
-  } catch (e) {
-    console.error('ニュースの取得に失敗しました:', e);
+    let allTitles = [];
+    for (const url of feedUrls) {
+      const feed = await parser.parseURL(url);
+      const titles = feed.items.map(item => item.title);
+      allTitles = allTitles.concat(titles);
+    }
+    res.json({ headlines: allTitles.slice(0, 50) });
+  } catch (err) {
+    console.error('❌ RSS取得失敗:', err);
+    res.status(500).json({ error: 'Failed to fetch RSS' });
   }
-}
+});
+
+// ✅ すべてのルートでindex.htmlを返す（クライアントサイドルーティング対応）
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'client', 'index.html'));
+});
+
+app.listen(PORT, () => {
+  console.log(`✅ Server running at http://localhost:${PORT}`);
+});
