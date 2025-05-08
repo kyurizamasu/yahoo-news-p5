@@ -7,7 +7,7 @@ function setup() {
   textAlign(LEFT, TOP);
   fill(0);
   loadNews();
-  setInterval(loadNews, 10000); // 10秒ごとに更新
+  setInterval(loadNews, 3000); // 10秒ごとに更新
 }
 
 function draw() {
@@ -21,9 +21,10 @@ function draw() {
 
 function loadNews() {
   count++;
-  fetch('https://yahoo-news-p5.onrender.com/news') // ← あなたのRenderのURLに置き換えてください
+  fetch('https://yahoo-news-p5.onrender.com/news')
     .then(response => response.json())
     .then(data => {
+      console.log('📦 取得したニュース:', data); // ← 追加
       news = data;
     })
     .catch(err => {
