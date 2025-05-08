@@ -8,16 +8,17 @@ function setup() {
   fill(0);
 
   fetchNews(); // 初回取得
-  setInterval(fetchNews, 60 * 1000); // 60秒ごとに更新
+  setInterval(fetchNews, 3 * 1000); // 60秒ごとに更新
 }
 
 function draw() {
   background(255);
   text(`更新回数: ${updateCount}`, 10, 10);
 
-  for (let i = 0; i < headlines.length; i++) {
-    let y = 40 + i * 24;
-    text(headlines[i], 10, y);
+for (let i = 0; i < news.length; i++) {
+    const firstChar = news[i].charAt(0); // 👈 最初の1文字を取り出す
+    text(`${firstChar}`, 20, y);
+    y += 30;
   }
 }
 
