@@ -8,35 +8,16 @@ const PORT = 3000;
 
 app.use(cors());
 
-// ✅ ここで複数カテゴリのRSSを指定
-const feedUrls = [
-  'https://news.yahoo.co.jp/rss/topics/top-picks.xml',
-  'https://news.yahoo.co.jp/rss/topics/business.xml',
-  'https://news.yahoo.co.jp/rss/topics/it.xml',
-  'https://news.yahoo.co.jp/rss/topics/world.xml',
-  'https://news.yahoo.co.jp/rss/topics/science.xml',
-  'https://news.yahoo.co.jp/rss/topics/sports.xml'
-];
-
 app.get('/news', async (req, res) => {
   try {
-    let allTitles = [];
-    for (const url of feedUrls) {
-      console.log(`🔄 フィード取得開始: ${url}`); // ← ログ追加①
-      const feed = await parser.parseURL(url);
-      console.log(`✅ 件数: ${feed.items.length} from ${feed.title}`); // ← ログ追加②
-      const titles = feed.items.map(item => item.title);
-      allTitles = allTitles.concat(titles);
-    }
-    console.log(`🎉 合計見出し数: ${allTitles.length}`); // ← ログ追加③
-    res.json(allTitles.slice(0, 50));
+    const feed = await parser.parseURL('https://news.yahoo.co.jp/rss/topics/top-picks.xml');
+    const titles = feed.items.map(item => item.title);
+    res.json(titles);
   } catch (err) {
-    console.error('❌ RSS取得失敗:', err); // ← エラー内容を表示
     res.status(500).json({ error: 'Failed to fetch RSS' });
   }
 });
 
 app.listen(PORT, () => {
-  console.log(`✅ Server running at http://localhost:${PORT}`);
+  console.log(`Server running at http://localhost:${PORT}`);
 });
-
