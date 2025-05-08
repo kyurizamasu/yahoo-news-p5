@@ -21,7 +21,7 @@ function draw() {
 
 function loadNews() {
   count++;
-  fetch('https://あなたのレンダーのURL/news') // ← あなたのRenderのURLに置き換えてください
+  fetch('https://yahoo-news-p5.onrender.com/news') // ← あなたのRenderのURLに置き換えてください
     .then(response => response.json())
     .then(data => {
       news = data;
