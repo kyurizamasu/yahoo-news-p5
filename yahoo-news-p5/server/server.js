@@ -22,20 +22,19 @@ app.get('/news', async (req, res) => {
   try {
     let allTitles = [];
     for (const url of feedUrls) {
-      console.log(`🔄 フィード取得開始: ${url}`);
       const feed = await parser.parseURL(url);
-      console.log(`✅ 件数: ${feed.items.length} from ${feed.title}`);
       const titles = feed.items.map(item => item.title);
       allTitles = allTitles.concat(titles);
     }
-    console.log(`🎉 合計見出し数: ${allTitles.length}`);
-    res.json(allTitles.slice(0, 50));
+
+    // 重複を排除し、最大50件まで返す
+    const uniqueTitles = [...new Set(allTitles)].slice(0, 50);
+    res.json(uniqueTitles);
   } catch (err) {
-    console.error('❌ RSS取得失敗:', err);
+    console.error(err);
     res.status(500).json({ error: 'Failed to fetch RSS' });
   }
 });
-
 
 
 app.listen(PORT, () => {
