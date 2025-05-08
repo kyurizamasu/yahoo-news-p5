@@ -15,7 +15,7 @@ function draw() {
   text(`更新回数: ${count}`, 20, 20);
   for (let i = 0; i < news.length; i++) {
     let firstChar = news[i].charAt(0); // 先頭1文字を抽出
-    text(`${firstChar}`, 20, 60 + i * 40);
+    text(`${i + 1}: ${firstChar}`, 20, 60 + i * 40);
   }
 }
 
