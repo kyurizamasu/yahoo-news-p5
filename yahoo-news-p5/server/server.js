@@ -22,15 +22,16 @@ app.get('/news', async (req, res) => {
   try {
     let allTitles = [];
     for (const url of feedUrls) {
+      console.log(`🔄 フィード取得開始: ${url}`); // ← ログ追加①
       const feed = await parser.parseURL(url);
+      console.log(`✅ 件数: ${feed.items.length} from ${feed.title}`); // ← ログ追加②
       const titles = feed.items.map(item => item.title);
       allTitles = allTitles.concat(titles);
     }
-
-    // 重複を排除し、最大50件まで返す
+    console.log(`🎉 合計見出し数: ${allTitles.length}`); // ← ログ追加③
     res.json(allTitles.slice(0, 50));
   } catch (err) {
-    console.error(err);
+    console.error('❌ RSS取得失敗:', err); // ← エラー内容を表示
     res.status(500).json({ error: 'Failed to fetch RSS' });
   }
 });
@@ -39,19 +40,3 @@ app.listen(PORT, () => {
   console.log(`✅ Server running at http://localhost:${PORT}`);
 });
 
-app.get('/news', async (req, res) => {
-  try {
-    let allTitles = [];
-    for (const url of feedUrls) {
-      console.log(`🔄 Fetching: ${url}`); // ←追加！
-      const feed = await parser.parseURL(url);
-      const titles = feed.items.map(item => item.title);
-      allTitles = allTitles.concat(titles);
-    }
-    console.log(`✅ Total headlines: ${allTitles.length}`); // ←追加！
-    res.json(allTitles.slice(0, 50));
-  } catch (err) {
-    console.error('❌ RSS取得失敗:', err); // ←詳細ログ
-    res.status(500).json({ error: 'Failed to fetch RSS' });
-  }
-});
