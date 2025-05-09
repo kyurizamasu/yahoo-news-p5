@@ -1,33 +1,32 @@
-let news = [];
-let count = 0;
+let headlines = [];
+let fetchCount = 0;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  textSize(32);
+  textSize(18);
   textAlign(LEFT, TOP);
-  fill(0);
-  loadNews();
-  setInterval(loadNews, 3000); // 3秒ごとに更新
+  noLoop();
+  fetchNews();
+  setInterval(fetchNews, 60 * 1000); // 毎分更新
+}
+
+async function fetchNews() {
+  try {
+    const res = await fetch('https://your-api-name.onrender.com/news'); // ← RenderのURLに置き換える
+    const data = await res.json();
+    headlines = data;
+    fetchCount++;
+    redraw();
+  } catch (err) {
+    console.error('ニュース取得失敗', err);
+  }
 }
 
 function draw() {
   background(255);
-  text(`更新回数: ${count}`, 20, 20);
-  for (let i = 0; i < news.length; i++) {
-    let firstChar = news[i].charAt(0); // ← 1文字目だけ抽出
-    text(`${i + 1}: ${firstChar}`, 20, 60 + i * 40);
+  fill(0);
+  text(`更新回数: ${fetchCount}`, 10, 10);
+  for (let i = 0; i < headlines.length; i++) {
+    text(headlines[i], 10, 40 + i * 24);
   }
-}
-
-function loadNews() {
-  count++;
-  fetch('https://yahoo-news-p5.onrender.com/news')
-    .then(response => response.json())
-    .then(data => {
-      console.log('📦 取得したニュース:', data);
-      news = data;
-    })
-    .catch(err => {
-      console.error('❌ ニュース取得エラー:', err);
-    });
 }
