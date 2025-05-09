@@ -18,7 +18,7 @@ function draw() {
   for (let i = 0; i < headlines.length; i++) {
     let y = 40 + i * 24;
     let firstChar = headlines[i] ? headlines[i].charAt(0) : ''; // 安全に1文字取得
-    text(`${i + 1}: ${firstChar}`, 10, y);
+    text(` ${firstChar}`, 10, y);
   }
 }
 
