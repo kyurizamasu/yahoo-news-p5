@@ -16,7 +16,7 @@ function setup() {
   angleMode(DEGREES);
 
   fetchNews();
-  setInterval(fetchNews, 60 * 1000); // 60秒ごとに更新
+  setInterval(fetchNews, 10 * 1000); // 60秒ごとに更新
 }
 
 function draw() {
