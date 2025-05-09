@@ -12,7 +12,7 @@ function setup() {
 
 async function fetchNews() {
   try {
-    const res = await fetch('https://your-api-name.onrender.com/news'); // ← RenderのURLに置き換える
+    const res = await fetch('https://yahoo-news-p5.onrender.com/news'); // ← RenderのURLに置き換える
     const data = await res.json();
     headlines = data;
     fetchCount++;
