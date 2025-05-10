@@ -7,7 +7,7 @@ function setup() {
   textAlign(CENTER, CENTER);
   noStroke();
   fetchNews();
-  setInterval(fetchNews, 60 * 1000);
+  setInterval(fetchNews, 6 * 1000);
 }
 
 function draw() {
